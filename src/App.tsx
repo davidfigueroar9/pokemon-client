@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import DarkModeButton from "./components/DarkmodeButton";
-const getUrl = (id: number): string => {
-  return `https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${id}.svg`;
-};
 
 const getImage = (id: number): string => {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
