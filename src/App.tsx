@@ -1,55 +1,67 @@
-import logo from "./logo.svg";
-import { Counter } from "./features/counter/Counter";
+import { useEffect, useState } from "react";
+
+const getUrl = (id: number): string => {
+  return `https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${id}.svg`;
+};
+
+const getId = (url: string): number => {
+  const id = url.split("/")[6].split(".")[0];
+  return Number(id);
+};
 
 function App() {
+  const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch(
+        "https://pokeapi.co/api/v2/pokemon?offset=0&limit=20"
+      );
+      const data = await result.json();
+      setPokemons(data.results);
+    };
+    fetchData();
+  }, []);
+
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
-      <header className="flex flex-1 items-center justify-center flex-col">
-        <img src={logo} className="w-56" alt="logo" />
-        <Counter />
-        <p className="text-lg mt-6">
-          Edit <code className="font-mono">src/App.tsx</code> and save to
-          reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="text-blue-500 hover:text-blue-700"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="text-blue-500 hover:text-blue-700"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="text-blue-500 hover:text-blue-700"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="text-blue-500 hover:text-blue-700"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+    <div className="h-screen flex flex-col">
+      <header className="border-b py-4">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-2xl ">Pokemon finder</span>
+        </div>
       </header>
+      <main className="flex-1 bg-gray-50 overflow-y-auto">
+        <div className="max-w-7xl mx-auto mt-3">
+          <div>
+            <input
+              type="text"
+              placeholder="Search a pokemon"
+              className="px-4 py-2 border border-gray-400 rounded-lg w-full"
+            />
+          </div>
+          <div className="grid grid-cols-4 gap-4 mt-6 mb-4">
+            {pokemons.map((pokemon, index) => (
+              <div
+                key={pokemon.name}
+                className="bg-white rounded-lg shadow-lg overflow-hidden"
+              >
+                <div className="bg-gray-200">
+                  <img
+                    src={getUrl(getId(pokemon.url))}
+                    alt=""
+                    className="h-64 mx-auto p-5"
+                  />
+                  <div className="bg-white p-4">
+                    <div className="text-xl font-semibold text-gray-900">
+                      {pokemon.name}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
